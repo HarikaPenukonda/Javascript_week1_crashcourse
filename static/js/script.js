@@ -11,7 +11,7 @@ function ageInDays(){
 }
 
 function reset(){
-    document.getElementById('ageInDays').remove();
+    document.getElementById('flex-box-result').remove();
 }
 
 //Challenge 2 : Cat Generator
@@ -91,4 +91,56 @@ function rpsGame(yourChoice){
         document.getElementById('flex-box-rps-div').appendChild(messageDiv);
         document.getElementById('flex-box-rps-div').appendChild(botDiv);
     }
+
+//Challenge 4 : Change the color of the buttons
+    var all_buttons = document.getElementsByTagName('button');
+    console.log(all_buttons);
+    var copyAllButtons = [];
+    for (var i=0; i<all_buttons.length;i++){
+        copyAllButtons.push(all_buttons[i].classList[1]);
+    }
+    console.log(copyAllButtons);
+
+function buttonColorChange(buttonColor){
+    //console.log(buttonColor.value);
+    if (buttonColor.value === 'red'){
+        buttonsRed();
+    } else if (buttonColor.value === 'green'){
+        buttonsGreen();
+    }else if (buttonColor.value === 'reset'){
+        buttonColorReset();
+    }else if (buttonColor.value === 'random'){
+        randomColor();
+    }
+}
+
+function buttonsRed(){
+    for(var i=0;i<all_buttons.length;i++){
+        all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+        all_buttons[i].classList.add('btn-danger');
+    }
+}
+
+function buttonsGreen(){
+    for(var i=0;i<all_buttons.length;i++){
+        all_buttons[i].classList.remove(all_buttons[i].classList[1])
+        all_buttons[i].classList.add('btn-success');
+    }
+}
+
+function buttonColorReset(){
+    for(var i=0;i<all_buttons.length;i++){
+        all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+        all_buttons[i].classList.add(copyAllButtons[i]);
+    }
+}
+
+function randomColor(){
+    var choices = ['btn-primary', 'btn-success', 'btn-warning', 'btn-danger'];
+    for(var i=0;i<all_buttons.length;i++){
+        var randomNumber = Math.floor(Math.random()*4);
+        all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+        all_buttons[i].classList.add(choices[randomNumber]);
+    }
+}
 
