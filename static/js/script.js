@@ -33,7 +33,7 @@ function rpsGame(yourChoice){
     console.log(results);
     message = finalMessage(results);
     console.log(message);
-    rpsFrontEnd(humanChoice.id, botChoice, message);
+    rpsFrontEnd(humanChoice, botChoice, message);
 }
     function randToRpsInt(){
         return Math.floor(Math.random() * 3);
@@ -83,7 +83,7 @@ function rpsGame(yourChoice){
         var botDiv = document.createElement('div');
         var messageDiv = document.createElement('div');
 
-       humanDiv.innerHTML   = "<img src='" + imageDatabase[humanImageChoice]+ "' height=150 width=150 style='box-shadow: 0px 10px 50px rgba(37, 50, 233, 1);'>"
+       humanDiv.innerHTML = "<img src='" + imageDatabase[humanImageChoice]+ "' height=150 width=150 style='box-shadow: 0px 10px 50px rgba(37, 50, 233, 1);'>"
        botDiv.innerHTML   = "<img src='" + imageDatabase[computerImageChoice]+ "' height=150 width=150 style='box-shadow: 0px 10px 50px rgba(243, 38, 24, 1);'>"
        messageDiv.innerHTML = "<h1 style='color : " + finalMessage['color'] +"; font-size: 60px; padding: 30px; '>" + finalMessage['message'] + "</h1>"
 
