@@ -153,6 +153,8 @@ var blackjackGame = {
     'wins' : 0,
     'losses' : 0,
     'draws' : 0,
+    'isStand' : false,
+    'turnsOver' : false,
 };
 
 const YOU = blackjackGame['you']
@@ -167,13 +169,15 @@ document.querySelector('#blackjack-stand-button').addEventListener('click',deale
 document.querySelector('#blackjack-deal-button').addEventListener('click',blackjackdeal);
 
 function blackjackhit(){
+    if(blackjackGame['isStand'] === false){
     var card = randomCard();
     //console.log(card);
     showCard(card, YOU);
     updateScore(card,YOU);
     showScore(YOU);
     console.log(YOU['score']);
-   
+    }
+    
 }
 
 function randomCard(){
@@ -189,29 +193,36 @@ function showCard(card, activePlayer){
     hitSound.play();
     }    
 }
-
+/* We need to deactivate the stand mode and turnsOver mode inside deal i..e when we hit deal button 
+the deal button should only work when both user and dealer turn has been done */
 function blackjackdeal() {
-    
-    var yourImages = document.querySelector('#your-box').querySelectorAll('img');
-    var dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
-    
-    for(i=0;i<yourImages.length;i++){
-        yourImages[i].remove();
-    } 
-    for(i=0;i<dealerImages.length;i++){
-    dealerImages[i].remove();
+    if(blackjackGame['turnsOver'] === true)
+    {
+        //deactivates the deal button, deaactivates the entire game
+        blackjackGame['isStand'] = false;
+        var yourImages = document.querySelector('#your-box').querySelectorAll('img');
+        var dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
+        
+        for(i=0;i<yourImages.length;i++){
+            yourImages[i].remove();
+        } 
+        for(i=0;i<dealerImages.length;i++){
+        dealerImages[i].remove();
+        }
+
+        YOU['score'] = 0;
+        DEALER['score'] = 0;
+        document.querySelector('#your-blackjack-result').textContent = 0;
+        document.querySelector('#dealer-blackjack-result').textContent = 0;
+
+        document.querySelector('#your-blackjack-result').style.color = '#ffffff';
+        document.querySelector('#dealer-blackjack-result').style.color = '#ffffff';
+
+        document.querySelector('#blackjack-result').textContent = 'Lets Play';
+        document.querySelector('#blackjack-result').style.color = 'black';
+        //deactivated
+        blackjackGame['turnsOver'] = true;
     }
-
-    YOU['score'] = 0;
-    DEALER['score'] = 0;
-    document.querySelector('#your-blackjack-result').textContent = 0;
-    document.querySelector('#dealer-blackjack-result').textContent = 0;
-
-    document.querySelector('#your-blackjack-result').style.color = '#ffffff';
-    document.querySelector('#dealer-blackjack-result').style.color = '#ffffff';
-
-    document.querySelector('#blackjack-result').textContent = 'Lets Play';
-    document.querySelector('#blackjack-result').style.color = 'black';
 }
 
 function updateScore(card, activePlayer){
@@ -239,19 +250,27 @@ function showScore(activePlayer){
 }
 
 function dealerLogic (){
+    blackjackGame['isStand'] = true; //As soon as you hit the stand button then the dealer logic function runs
+    //and that function will change the stand state to true
     let card = randomCard();
     showCard(card, DEALER);
     updateScore(card, DEALER);
     showScore(DEALER);
 
     if(DEALER['score'] > 15){
+    /*Once you hit stand and the dealer starts playing, when the dealer is done playing the turns over needs 
+    to change to true, beacuse we need to hit those buttons again*/
+    blackjackGame['turnsOver'] = true;
+    //This below code indicates the turns are over
     let winner = computeWinner();
     showResult(winner);
+    console.log(blackjackGame['turnsOver']);
     }
 }
 
 //compute the winner and return the result
 //update the scores of wins, losses and draws
+
 function computeWinner(){
     let winner;
 
@@ -290,23 +309,27 @@ function computeWinner(){
 
 function showResult(winner){
     let message, messagecolor;
-    if (YOU === winner){
-        document.querySelector('#wins').textContent = blackjackGame['wins'];
-        message = 'You won!';
-        messagecolor = 'green';
-        winSound.play();
+/*it should first check wether all the turns are over before running and showing the results  
+we shouldnt see the results until all the turns are over */
+    if (blackjackGame['turnsOver'] === true)
+    {
+        if (YOU === winner){
+            document.querySelector('#wins').textContent = blackjackGame['wins'];
+            message = 'You won!';
+            messagecolor = 'green';
+            winSound.play();
 
-    }else if (DEALER === winner){
-        document.querySelector('#losses').textContent = blackjackGame['losses'];
-        message = 'You lost!';
-        messagecolor = 'red';
-        loseSound.play();
-    }else{
-        document.querySelector('#draws').textContent = blackjackGame['draws'];
-        message = 'You drew!';
-        messagecolor = 'black';
+        }else if (DEALER === winner){
+            document.querySelector('#losses').textContent = blackjackGame['losses'];
+            message = 'You lost!';
+            messagecolor = 'red';
+            loseSound.play();
+        }else{
+            document.querySelector('#draws').textContent = blackjackGame['draws'];
+            message = 'You drew!';
+            messagecolor = 'black';
+        }
+        document.querySelector('#blackjack-result').textContent = message;
+        document.querySelector('#blackjack-result').style.color = messagecolor;
     }
-    document.querySelector('#blackjack-result').textContent = message;
-    document.querySelector('#blackjack-result').style.color = messagecolor;
-
 }
