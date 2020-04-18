@@ -249,23 +249,28 @@ function showScore(activePlayer){
     
 }
 
-function dealerLogic (){
+async function dealerLogic (){
     blackjackGame['isStand'] = true; //As soon as you hit the stand button then the dealer logic function runs
     //and that function will change the stand state to true
-    let card = randomCard();
-    showCard(card, DEALER);
-    updateScore(card, DEALER);
-    showScore(DEALER);
-
-    if(DEALER['score'] > 15){
-    /*Once you hit stand and the dealer starts playing, when the dealer is done playing the turns over needs 
-    to change to true, beacuse we need to hit those buttons again*/
-    blackjackGame['turnsOver'] = true;
-    //This below code indicates the turns are over
-    let winner = computeWinner();
-    showResult(winner);
-    console.log(blackjackGame['turnsOver']);
+    while(DEALER['score'] < 16 && blackjackGame['isStand'] === true)
+    {
+        let card = randomCard();
+        showCard(card, DEALER);
+        updateScore(card, DEALER);
+        showScore(DEALER);
+        await sleep(1000);
     }
+    
+
+    //if(DEALER['score'] > 15)
+ /*Once you hit stand and the dealer starts playing, when the dealer is done playing the turns over needs 
+to change to true, beacuse we need to hit those buttons again*/
+ blackjackGame['turnsOver'] = true;
+    //This below code indicates the turns are over
+let winner = computeWinner();
+showResult(winner);
+    //console.log(blackjackGame['turnsOver']);
+
 }
 
 //compute the winner and return the result
@@ -332,4 +337,8 @@ we shouldnt see the results until all the turns are over */
         document.querySelector('#blackjack-result').textContent = message;
         document.querySelector('#blackjack-result').style.color = messagecolor;
     }
+}
+
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
